@@ -1,0 +1,41 @@
+title: "R Notebook"
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document: default
+---
+
+This code takes data from https://wonder.cdc.gov/ the data is six years showing all suicides per county ages 15 to 34. 
+
+```{r, warning=FALSE}
+
+library(plyr)
+
+# Loading the data from six years of suicide all suicides per county ages 15 to 34 data from https://wonder.cdc.gov/controller/datarequest/D76;jsessionid=182C96DB47DB9F069D9C1708B1953075 
+
+
+D2015 <- read.csv("/Users/jeffkropelnicki/Desktop/Death/2015 suicide age 15 to 34.csv")
+D2014 <- read.csv("/Users/jeffkropelnicki/Desktop/Death/2014 suicide age 15 to 34.csv")
+D2013 <- read.csv("/Users/jeffkropelnicki/Desktop/Death/2013 suicide age 15 to 34.csv")
+D2012 <- read.csv("/Users/jeffkropelnicki/Desktop/Death/2012 suicide age 15 to 34.csv")
+D2011 <- read.csv("/Users/jeffkropelnicki/Desktop/Death/2011 suicide age 15 to 34.csv")
+D2010 <- read.csv("/Users/jeffkropelnicki/Desktop/Death/2010 suicide age 15 to 34.csv")
+
+# Joining all the data on County_Code
+two_years <- merge(x = D2015, y = D2014, by = "County_Code", all.x = TRUE)
+three_years <- merge(x = two_years, y = D2013, by = "County_Code", all.x = TRUE)
+four_years <- merge(x = three_years, y = D2012, by = "County_Code", all.x = TRUE)
+five_years <- merge(x = four_years, y = D2011, by = "County_Code", all.x = TRUE)
+all_years <- merge(x = five_years, y = D2010, by = "County_Code", all.x = TRUE)
+
+# Romoving the names of countries that came with the join, leaving only the columns wanted. 
+final_table <- subset(all_years, select = c(County_Code, County.x, Deaths_2015, Population_2015, Crude_Rate_2015, Deaths_2014, Population_2014, Crude_Rate_2014, Deaths_2013, Population_2013, Crude_Rate_2013, Deaths_2012, Population_2012, Crude_Rate_2012, Deaths_2011, Population_2011, Crude_Rate_2011, Deaths_2010, Population_2010, Crude_Rate_2010))
+
+
+sort <- arrange(final_table,desc(Deaths_2015))
+head(sort, n = 10)
+
+```
+
+
+
